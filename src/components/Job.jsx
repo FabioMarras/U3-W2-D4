@@ -2,7 +2,7 @@ import { Row, Col, Button } from "react-bootstrap";
 import { useDispatch } from "react-redux";
 import { Link } from "react-router-dom";
 
-const Job = ({ data }) => {
+const Job = ({ data, isButton }) => {
   const dispatch = useDispatch();
 
   return (
@@ -15,13 +15,17 @@ const Job = ({ data }) => {
           {data.title}
         </a>
       </Col>
-      <Button
-        onClick={() => {
-          dispatch({ type: "ADD_JOB", payload: data });
-        }}
-      >
-        aggiungi ai preferiti
-      </Button>
+      {isButton ? (
+        <Button
+          onClick={() => {
+            dispatch({ type: "ADD_JOB", payload: data });
+          }}
+        >
+          aggiungi ai preferiti
+        </Button>
+      ) : (
+        ""
+      )}
     </Row>
   );
 };

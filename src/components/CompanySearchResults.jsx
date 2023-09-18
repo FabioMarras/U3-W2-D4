@@ -30,7 +30,7 @@ const CompanySearchResults = () => {
     }
   };
 
-  const stato = useSelector((state) => state.cart.content);
+  const stato = useSelector((state) => state.addRemove.content);
 
   return (
     <Container>

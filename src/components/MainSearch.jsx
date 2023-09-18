@@ -3,12 +3,14 @@ import { Container, Row, Col, Form, Button, Badge } from "react-bootstrap";
 import Job from "./Job";
 import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
+import { getFetch } from "../redux/actions";
 
 const MainSearch = () => {
   const dispatch = useDispatch();
   const [query, setQuery] = useState("");
-  const [jobs, setJobs] = useState([]);
-  const job = useSelector((state) => state.cart.content);
+  // const [jobs, setJobs] = useState([]);
+  // const job = useSelector((state) => state.cart.content);
+  const jobs = useSelector((state) => state.mainR.content);
 
   const baseEndpoint = "https://strive-benchmark.herokuapp.com/api/jobs?search=";
 
@@ -18,21 +20,21 @@ const MainSearch = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
-    try {
-      const response = await fetch(baseEndpoint + query + "&limit=10");
-      if (response.ok) {
-        const { data } = await response.json();
-        setJobs(data);
-      } else {
-        alert("Error fetching results");
-      }
-    } catch (error) {
-      console.log(error);
-    }
+    dispatch(getFetch(query));
+    // try {
+    //   const response = await fetch(baseEndpoint + query + "&limit=10");
+    //   if (response.ok) {
+    //     const { data } = await response.json();
+    //     setJobs(data);
+    //   } else {
+    //     alert("Error fetching results");
+    //   }
+    // } catch (error) {
+    //   console.log(error);
+    // }
   };
 
-  const jobsStateLength = useSelector((state) => state.cart.content.length);
+  const jobsStateLength = useSelector((state) => state.addRemove.content.length);
 
   return (
     <Container>
@@ -53,7 +55,7 @@ const MainSearch = () => {
           </Link>
 
           {jobs.map((jobData) => (
-            <Job key={jobData._id} data={jobData} />
+            <Job key={jobData._id} data={jobData} isButton={true} />
           ))}
         </Col>
       </Row>
