@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Container, Row, Col, Form, Button, Badge } from "react-bootstrap";
+import { Container, Row, Col, Form, Button, Badge, Alert, Spinner } from "react-bootstrap";
 import Job from "./Job";
 import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
@@ -11,6 +11,9 @@ const MainSearch = () => {
   // const [jobs, setJobs] = useState([]);
   // const job = useSelector((state) => state.cart.content);
   const jobs = useSelector((state) => state.mainR.content);
+
+  const mainLoading = useSelector((state) => state.mainR.isLoading);
+  const errorMessage = useSelector((state) => state.mainR.hasError);
 
   const baseEndpoint = "https://strive-benchmark.herokuapp.com/api/jobs?search=";
 
@@ -44,20 +47,37 @@ const MainSearch = () => {
         </Col>
         <Col xs={10} className="mx-auto">
           <Form onSubmit={handleSubmit}>
-            <Form.Control type="search" value={query} onChange={handleChange} placeholder="type and press Enter" />
+            <Form.Control
+              type="search"
+              value={query}
+              onChange={handleChange}
+              placeholder="type and press Enter"
+              required
+            />
           </Form>
         </Col>
-        <Col xs={10} className="mx-auto mb-5 mt-2">
-          <Link to={"/company"}>
-            <Button variant="primary">
-              Preferiti <Badge bg="success">{jobsStateLength}</Badge>
-            </Button>
-          </Link>
-
-          {jobs.map((jobData) => (
-            <Job key={jobData._id} data={jobData} isButton={true} />
-          ))}
-        </Col>
+        {!mainLoading ? (
+          errorMessage ? (
+            <Col xs={10} className="mx-auto mb-5 mt-2">
+              <Alert variant="info"> Oh no! Errore nel reperimento dei dati 😰{errorMessage}</Alert>
+            </Col>
+          ) : (
+            <Col xs={10} className="mx-auto mb-5 mt-2">
+              <Link to={"/company"}>
+                <Button variant="primary">
+                  Preferiti <Badge bg="success">{jobsStateLength}</Badge>
+                </Button>
+              </Link>
+              {jobs.map((jobData) => (
+                <Job key={jobData._id} data={jobData} isButton={true} />
+              ))}
+            </Col>
+          )
+        ) : (
+          <Col xs={10} className="mx-auto mb-5 mt-2">
+            <Spinner animation="grow" />
+          </Col>
+        )}
       </Row>
     </Container>
   );

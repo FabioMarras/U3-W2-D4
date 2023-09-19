@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
-import { Container, Row, Col, Button } from "react-bootstrap";
+import { Container, Row, Col, Button, Spinner } from "react-bootstrap";
 import Job from "./Job";
-import { useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 
 const CompanySearchResults = () => {
@@ -29,26 +29,34 @@ const CompanySearchResults = () => {
       console.log(error);
     }
   };
-
+  const mainLoading = useSelector((state) => state.mainR.isLoading);
   const stato = useSelector((state) => state.addRemove.content);
 
   return (
     <Container>
       <Row>
         <Col className="my-3">
+          <Button variant="dark">
+            <Link to={".."}>Home Page</Link>
+          </Button>
           <h1 className="display-4">Job posting for: {params.company}</h1>
-          {stato.map((jobStato, i) => (
-            <div key={jobStato._id}>
-              <Job data={jobStato} />
-              <Button
-                onClick={() => {
-                  dispatch({ type: "REMOVE_JOB", payload: i });
-                }}
-              >
-                Delete
-              </Button>
-            </div>
-          ))}
+          {!mainLoading ? (
+            stato.map((jobStato, i) => (
+              <div key={jobStato._id}>
+                <Job data={jobStato} />
+                <Button
+                  onClick={() => {
+                    dispatch({ type: "REMOVE_JOB", payload: i });
+                  }}
+                >
+                  Delete
+                </Button>
+              </div>
+            ))
+          ) : (
+            <Spinner animation="grow" />
+            //prende i dati dallo stato quindi non si vede
+          )}
         </Col>
       </Row>
     </Container>
